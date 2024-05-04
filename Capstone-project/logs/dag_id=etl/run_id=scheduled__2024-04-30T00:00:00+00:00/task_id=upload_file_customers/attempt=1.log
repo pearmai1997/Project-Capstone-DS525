@@ -1,0 +1,51 @@
+[2024-05-03T13:27:17.093+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2024-05-03T13:27:17.384+0000] {taskinstance.py:2073} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl.upload_file_customers scheduled__2024-04-30T00:00:00+00:00 [queued]>
+[2024-05-03T13:27:17.617+0000] {taskinstance.py:2073} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl.upload_file_customers scheduled__2024-04-30T00:00:00+00:00 [queued]>
+[2024-05-03T13:27:17.625+0000] {taskinstance.py:2303} INFO - Starting attempt 1 of 1
+[2024-05-03T13:27:17.899+0000] {taskinstance.py:2327} INFO - Executing <Task(LocalFilesystemToGCSOperator): upload_file_customers> on 2024-04-30 00:00:00+00:00
+[2024-05-03T13:27:18.060+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'etl', 'upload_file_customers', 'scheduled__2024-04-30T00:00:00+00:00', '--job-id', '54', '--raw', '--subdir', 'DAGS_FOLDER/etl.py', '--cfg-path', '/tmp/tmpp8tc25rw']
+[2024-05-03T13:27:18.061+0000] {standard_task_runner.py:91} INFO - Job 54: Subtask upload_file_customers
+[2024-05-03T13:27:18.079+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:61 DeprecationWarning: This process (pid=3585) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2024-05-03T13:27:18.094+0000] {standard_task_runner.py:63} INFO - Started process 3742 to run task
+[2024-05-03T13:27:18.688+0000] {task_command.py:426} INFO - Running <TaskInstance: etl.upload_file_customers scheduled__2024-04-30T00:00:00+00:00 [running]> on host 0db60b1edb75
+[2024-05-03T13:27:22.411+0000] {taskinstance.py:2644} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='etl' AIRFLOW_CTX_TASK_ID='upload_file_customers' AIRFLOW_CTX_EXECUTION_DATE='2024-04-30T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2024-04-30T00:00:00+00:00'
+[2024-05-03T13:27:22.416+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2024-05-03T13:27:22.582+0000] {connection.py:274} WARNING - Connection schemes (type: google_cloud_platform) shall not contain '_' according to RFC3986.
+[2024-05-03T13:27:22.643+0000] {base.py:84} INFO - Using connection ID 'my_gcp_conn' for task execution.
+[2024-05-03T13:27:22.656+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2024-05-03T13:27:22.726+0000] {taskinstance.py:2890} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/baseoperator.py", line 400, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/providers/google/cloud/transfers/local_to_gcs.py", line 110, in execute
+    hook.upload(
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/providers/google/cloud/hooks/gcs.py", line 525, in upload
+    client = self.get_conn()
+             ^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/providers/google/cloud/hooks/gcs.py", line 168, in get_conn
+    credentials=self.get_credentials(), client_info=CLIENT_INFO, project=self.project_id
+                ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/providers/google/common/hooks/base_google.py", line 307, in get_credentials
+    credentials, _ = self.get_credentials_and_project_id()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/providers/google/common/hooks/base_google.py", line 284, in get_credentials_and_project_id
+    credentials, project_id = get_credentials_and_project_id(
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/providers/google/cloud/utils/credentials_provider.py", line 362, in get_credentials_and_project_id
+    return _CredentialProvider(*args, **kwargs).get_credentials_and_project()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/providers/google/cloud/utils/credentials_provider.py", line 213, in __init__
+    raise AirflowException(
+airflow.exceptions.AirflowException: The `keyfile_dict`, `key_path`, and `key_secret_name` fields are all mutually exclusive. Please provide only one value.
+[2024-05-03T13:27:22.855+0000] {taskinstance.py:1205} INFO - Marking task as FAILED. dag_id=etl, task_id=upload_file_customers, execution_date=20240430T000000, start_date=20240503T132717, end_date=20240503T132722
+[2024-05-03T13:27:23.983+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 54 for task upload_file_customers (The `keyfile_dict`, `key_path`, and `key_secret_name` fields are all mutually exclusive. Please provide only one value.; 3742)
+[2024-05-03T13:27:24.323+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 1
+[2024-05-03T13:27:27.040+0000] {taskinstance.py:3482} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2024-05-03T13:27:27.090+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

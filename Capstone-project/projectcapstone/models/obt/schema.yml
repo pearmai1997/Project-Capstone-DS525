@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: olist_obt
+    description: "transformed table from source data"
+    columns:
+      - name: order_id
+        description: "The data shouldn't be null"
+        tests:
+          - not_null
+
+  - name: view_sale_performance
+    description: "data view form olist_obt"
+    columns:
+      - name: order_id
+        description: "The data shouldn't be null"
+        tests:
+          - not_null
+
+  - name: view_delivery_performance
+    description: "data view form olist_obt"
+    columns:
+      - name: order_id
+        description: "The data shouldn't be null"
+        tests:
+          - not_null
+
+  - name: view_seller_performance
+    description: "data view form olist_obt"
+    columns:
+      - name: order_id
+        description: "The data shouldn't be null"
+        tests:
+          - not_null
