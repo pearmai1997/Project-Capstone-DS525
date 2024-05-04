@@ -2,8 +2,8 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.operators.empty import EmptyOperator
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
-from airflow.providers.google.cloud.transfers.local_to_gcs import LocalFilesystemToGCSOperator
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateEmptyDatasetOperator
+from airflow.providers.google.cloud.transfers.gcs_to_gcs import GCSToGCSOperator
 from airflow.operators.dummy import DummyOperator
 from airflow.utils import timezone
 from airflow.contrib.operators.bigquery_operator import BigQueryOperator
@@ -32,7 +32,7 @@ def _get_files(filepath: str):
 
 with DAG(
     "etl",
-    start_date=timezone.datetime(2024,5,3),
+    start_date=timezone.datetime(2024,5,4),
     schedule_interval="@daily",
     tags=["swu"],
 ) as dag:
@@ -44,84 +44,85 @@ with DAG(
     )
 
 
-    get_files = PythonOperator(
-        task_id="get_files",
-        python_callable=_get_files,
-        op_kwargs={"filepath": "/opt/airflow/dags/data"},
+    # Task to load data into Google Cloud Storage
+    upload_file_customers_to_capstone = GCSToGCSOperator(
+        task_id="upload_file_customers_to_capstone",
+        source_bucket="raw_data_projectcapstone",
+        source_objects=["olist_customers_dataset.csv"],
+        destination_bucket="storage-capstone",
+        destination_object="olist_customers_dataset.csv",
+        gcp_conn_id='my_gcp_conn'
     )
 
-    # Task to load data into Google Cloud Storage
-    upload_file_customers = LocalFilesystemToGCSOperator(
-        task_id='upload_file_customers',
-        src='/opt/airflow/dags/data/olist_customers_dataset.csv',
-        dst='olist_customers_dataset.csv',  # Destination file in the bucket
-        bucket='storage-capstone',  # Bucket name
-        gcp_conn_id='my_gcp_conn',  # Google Cloud connection id
-        mime_type='text/csv'
+    upload_file_geolocation_to_capstone = GCSToGCSOperator(
+        task_id="upload_file_geolocation_to_capstone",
+        source_bucket="raw_data_projectcapstone",
+        source_objects=["olist_geolocation_dataset.csv"],
+        destination_bucket="storage-capstone",
+        destination_object="olist_geolocation_dataset.csv",
+        gcp_conn_id='my_gcp_conn'
     )
-    upload_file_geolocation = LocalFilesystemToGCSOperator(
-        task_id='upload_file_geolocation',
-        src='/opt/airflow/dags/data/olist_geolocation_dataset.csv',
-        dst='olist_geolocation_dataset.csv',  # Destination file in the bucket
-        bucket='storage-capstone',  # Bucket name
-        gcp_conn_id='my_gcp_conn',  # Google Cloud connection id
-        mime_type='text/csv'
+
+    upload_file_items_to_capstone = GCSToGCSOperator(
+        task_id="upload_file_items_to_capstone",
+        source_bucket="raw_data_projectcapstone",
+        source_objects=["olist_order_items_dataset.csv"],
+        destination_bucket="storage-capstone",
+        destination_object="olist_order_items_dataset.csv",
+        gcp_conn_id='my_gcp_conn'
     )
-    upload_file_items = LocalFilesystemToGCSOperator(
-        task_id='upload_file_items',
-        src='/opt/airflow/dags/data/olist_order_items_dataset.csv',
-        dst='olist_order_items_dataset.csv',  # Destination file in the bucket
-        bucket='storage-capstone',  # Bucket name
-        gcp_conn_id='my_gcp_conn',  # Google Cloud connection id
-        mime_type='text/csv'
+
+    upload_file_payments_to_capstone = GCSToGCSOperator(
+        task_id="upload_file_payments_to_capstone",
+        source_bucket="raw_data_projectcapstone",
+        source_objects=["olist_order_payments_dataset.csv"],
+        destination_bucket="storage-capstone",
+        destination_object="olist_order_payments_dataset.csv",
+        gcp_conn_id='my_gcp_conn'
     )
-    upload_file_payments = LocalFilesystemToGCSOperator(
-        task_id='upload_file_payments',
-        src='/opt/airflow/dags/data/olist_order_payments_dataset.csv',
-        dst='olist_order_payments_dataset.csv',  # Destination file in the bucket
-        bucket='storage-capstone',  # Bucket name
-        gcp_conn_id='my_gcp_conn',  # Google Cloud connection id
-        mime_type='text/csv'
+
+    upload_file_reviews_to_capstone = GCSToGCSOperator(
+        task_id="upload_file_reviews_to_capstone",
+        source_bucket="raw_data_projectcapstone",
+        source_objects=["olist_order_reviews_dataset.csv"],
+        destination_bucket="storage-capstone",
+        destination_object="olist_order_reviews_dataset.csv",
+        gcp_conn_id='my_gcp_conn'
     )
-    upload_file_reviews = LocalFilesystemToGCSOperator(
-        task_id='upload_file_reviews',
-        src='/opt/airflow/dags/data/olist_order_reviews_dataset.csv',
-        dst='olist_order_reviews_dataset.csv',  # Destination file in the bucket
-        bucket='storage-capstone',  # Bucket name
-        gcp_conn_id='my_gcp_conn',  # Google Cloud connection id
-        mime_type='text/csv'
+
+    upload_file_orders_to_capstone = GCSToGCSOperator(
+        task_id="upload_file_orders_to_capstone",
+        source_bucket="raw_data_projectcapstone",
+        source_objects=["olist_orders_dataset.csv"],
+        destination_bucket="storage-capstone",
+        destination_object="olist_orders_dataset.csv",
+        gcp_conn_id='my_gcp_conn'
     )
-    upload_file_orders = LocalFilesystemToGCSOperator(
-        task_id='upload_file_orders',
-        src='/opt/airflow/dags/data/olist_orders_dataset.csv',
-        dst='olist_orders_dataset.csv',  # Destination file in the bucket
-        bucket='storage-capstone',  # Bucket name
-        gcp_conn_id='my_gcp_conn',  # Google Cloud connection id
-        mime_type='text/csv'
+
+    upload_file_products_to_capstone = GCSToGCSOperator(
+        task_id="upload_file_products_to_capstone",
+        source_bucket="raw_data_projectcapstone",
+        source_objects=["olist_products_dataset.csv"],
+        destination_bucket="storage-capstone",
+        destination_object="olist_products_dataset.csv",
+        gcp_conn_id='my_gcp_conn'
     )
-    upload_file_products = LocalFilesystemToGCSOperator(
-        task_id='upload_file_products',
-        src='/opt/airflow/dags/data/olist_products_dataset.csv',
-        dst='olist_products_dataset.csv',  # Destination file in the bucket
-        bucket='storage-capstone',  # Bucket name
-        gcp_conn_id='my_gcp_conn',  # Google Cloud connection id
-        mime_type='text/csv'
+    upload_file_sellers_to_capstone = GCSToGCSOperator(
+        task_id="upload_file_sellers_to_capstone",
+        source_bucket="raw_data_projectcapstone",
+        source_objects=["olist_sellers_dataset.csv"],
+        destination_bucket="storage-capstone",
+        destination_object="olist_sellers_dataset.csv",
+        gcp_conn_id='my_gcp_conn'
     )
-    upload_file_sellers = LocalFilesystemToGCSOperator(
-        task_id='upload_file_sellers',
-        src='/opt/airflow/dags/data/olist_sellers_dataset.csv',
-        dst='olist_sellers_dataset.csv',  # Destination file in the bucket
-        bucket='storage-capstone',  # Bucket name
-        gcp_conn_id='my_gcp_conn',  # Google Cloud connection id
-        mime_type='text/csv'
-    )
-    upload_file_name = LocalFilesystemToGCSOperator(
-        task_id='upload_file_name',
-        src='/opt/airflow/dags/data/product_category_name_translation.csv',
-        dst='product_category_name_translation.csv',  # Destination file in the bucket
-        bucket='storage-capstone',  # Bucket name
-        gcp_conn_id='my_gcp_conn',  # Google Cloud connection id
-        mime_type='text/csv'
+
+    upload_file_name_to_capstone = GCSToGCSOperator(
+        task_id="upload_file_name_to_capstone",
+        source_bucket="raw_data_projectcapstone",
+        source_objects=["product_category_name_translation.csv"],
+        destination_bucket="storage-capstone",
+        destination_object="product_category_name_translation.csv",
+        gcp_conn_id='my_gcp_conn'
     )
 #------------------------------------------------------------------------------------------------------#
 
@@ -231,4 +232,5 @@ with DAG(
     )
 
     # start >> get_files >> upload_file >> create_order_dataset >> load_dataset_order >> transform_bq >> end
-    start >> get_files >> [upload_file_customers, upload_file_geolocation, upload_file_items, upload_file_name ,upload_file_orders, upload_file_payments, upload_file_products, upload_file_reviews, upload_file_sellers] >> create_order_dataset >> [gcs_to_bq_customers, gcs_to_bq_geolocation, gcs_to_bq_items, gcs_to_bq_orders, gcs_to_bq_payments, gcs_to_bq_products, gcs_to_bq_reviews, gcs_to_bq_sellers, gcs_to_bq_translation]
+    # start >> get_files >> [upload_file_customers, upload_file_geolocation, upload_file_items, upload_file_name ,upload_file_orders, upload_file_payments, upload_file_products, upload_file_reviews, upload_file_sellers] >> create_order_dataset >> [gcs_to_bq_customers, gcs_to_bq_geolocation, gcs_to_bq_items, gcs_to_bq_orders, gcs_to_bq_payments, gcs_to_bq_products, gcs_to_bq_reviews, gcs_to_bq_sellers, gcs_to_bq_translation]
+    start >> [upload_file_customers_to_capstone, upload_file_geolocation_to_capstone, upload_file_items_to_capstone, upload_file_name_to_capstone ,upload_file_orders_to_capstone, upload_file_payments_to_capstone, upload_file_products_to_capstone, upload_file_reviews_to_capstone, upload_file_sellers_to_capstone] >> create_order_dataset >> [gcs_to_bq_customers, gcs_to_bq_geolocation, gcs_to_bq_items, gcs_to_bq_orders, gcs_to_bq_payments, gcs_to_bq_products, gcs_to_bq_reviews, gcs_to_bq_sellers, gcs_to_bq_translation] >> end
